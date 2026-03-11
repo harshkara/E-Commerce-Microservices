@@ -1,6 +1,6 @@
-package com.practice.taskmanager.repository;
+package com.practice.authService.repository;
 
-import com.practice.taskmanager.entity.User;
+import com.practice.authService.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

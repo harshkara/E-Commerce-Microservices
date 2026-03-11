@@ -1,6 +1,6 @@
-package com.practice.taskmanager.exception;
+package com.practice.authService.exception;
 
-import com.practice.taskmanager.dto.ErrorResponseDto;
+import com.practice.authService.dto.ErrorResponseDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -26,7 +26,8 @@ public class GlobalExceptionHandler {
                  .stream()
                  .collect(Collectors.toMap(
                          FieldError::getField,
-                         FieldError::getDefaultMessage
+                         FieldError::getDefaultMessage,
+                         (msg1, msg2) -> msg1 + ", " + msg2
                  ));
 
          return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponseDto(false,"Validations failed",map,LocalDateTime.now()));

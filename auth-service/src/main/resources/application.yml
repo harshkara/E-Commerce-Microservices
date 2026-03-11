@@ -1,13 +1,13 @@
 spring:
   application:
-    name: task-manager-api
+    name: auth-service-api
   profiles:
     active: dev
 
 logging:
   level:
     root: INFO
-    com.practice.taskmanager : INFO
+    com.practice.authService : INFO
     org.springframework.web : INFO
     org.hibernate.sql : WARN
     org.hibernate.orm.jdbc.bind : WARN

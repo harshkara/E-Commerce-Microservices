@@ -1,4 +1,4 @@
-package com.practice.taskmanager.dto;
+package com.practice.authService.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -1,4 +1,4 @@
-package com.practice.taskmanager.dto;
+package com.practice.authService.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -24,7 +24,7 @@ public class UserDto {
     private String email;
 
 
-//    @NotBlank(message="Mobile No. cannot be blank.")
+    @NotBlank(message="Mobile No. cannot be blank.")
     @Pattern(regexp="^\\d{10}$",message="Mobile number must be numeric and contain 10 digits.")
     private String mobileNumber;
 }

@@ -1,8 +1,8 @@
-package com.practice.taskmanager.mapper;
+package com.practice.authService.mapper;
 
-import com.practice.taskmanager.dto.UserDto;
-import com.practice.taskmanager.enm.Role;
-import com.practice.taskmanager.entity.User;
+import com.practice.authService.dto.UserDto;
+import com.practice.authService.enm.Role;
+import com.practice.authService.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;

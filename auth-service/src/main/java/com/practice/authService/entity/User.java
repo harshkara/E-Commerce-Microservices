@@ -1,4 +1,4 @@
-package com.practice.taskmanager.entity;
+package com.practice.authService.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

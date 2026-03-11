@@ -1,4 +1,4 @@
-package com.practice.taskmanager.config;
+package com.practice.authService.config;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.Servlet;

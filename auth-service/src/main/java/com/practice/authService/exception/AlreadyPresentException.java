@@ -1,4 +1,4 @@
-package com.practice.taskmanager.exception;
+package com.practice.authService.exception;
 
 public class AlreadyPresentException extends RuntimeException{
 

@@ -1,13 +1,13 @@
-package com.practice.taskmanager.service;
+package com.practice.authService.service;
 
-import com.practice.taskmanager.dto.UserDto;
-import com.practice.taskmanager.entity.User;
-import com.practice.taskmanager.enm.Role;
-import com.practice.taskmanager.exception.AlreadyPresentException;
-import com.practice.taskmanager.exception.InvalidCredentialsException;
-import com.practice.taskmanager.exception.NotFoundException;
-import com.practice.taskmanager.mapper.UserMapper;
-import com.practice.taskmanager.repository.UserRepository;
+import com.practice.authService.dto.UserDto;
+import com.practice.authService.entity.User;
+import com.practice.authService.enm.Role;
+import com.practice.authService.exception.AlreadyPresentException;
+import com.practice.authService.exception.InvalidCredentialsException;
+import com.practice.authService.exception.NotFoundException;
+import com.practice.authService.mapper.UserMapper;
+import com.practice.authService.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;

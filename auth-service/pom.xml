@@ -14,10 +14,10 @@
 	</parent>
 
 	<groupId>com.practice</groupId>
-	<artifactId>taskmanager</artifactId>
+	<artifactId>authService</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>task-manager-api</name>
-	<description>Task Management API</description>
+	<name>auth-service-api</name>
+	<description>Auth Service</description>
 
 	<properties>
 		<java.version>17</java.version>

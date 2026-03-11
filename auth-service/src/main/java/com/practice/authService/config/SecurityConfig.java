@@ -1,4 +1,4 @@
-package com.practice.taskmanager.config;
+package com.practice.authService.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

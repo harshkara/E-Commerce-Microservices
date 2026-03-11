@@ -1,4 +1,4 @@
-package com.practice.taskmanager;
+package com.practice.authService;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

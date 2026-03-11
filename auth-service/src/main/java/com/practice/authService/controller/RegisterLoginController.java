@@ -1,8 +1,8 @@
-package com.practice.taskmanager.controller;
+package com.practice.authService.controller;
 
-import com.practice.taskmanager.dto.ResponseDto;
-import com.practice.taskmanager.dto.UserDto;
-import com.practice.taskmanager.service.RegisterLoginService;
+import com.practice.authService.dto.ResponseDto;
+import com.practice.authService.dto.UserDto;
+import com.practice.authService.service.RegisterLoginService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +21,6 @@ public class RegisterLoginController {
     @PostMapping("/register")
     public ResponseEntity<ResponseDto> register(@Valid @RequestBody UserDto userDto) {
         registerLoginService.register(userDto);
-        System.out.println("1");
         return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto("User registered successfully."));
     }
 
