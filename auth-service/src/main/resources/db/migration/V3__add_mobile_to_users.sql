@@ -1,0 +1,1 @@
+Alter Table Users Add COLUMN mobileNumber varchar(10);
