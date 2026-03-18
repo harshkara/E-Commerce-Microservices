@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.web.util.ContentCachingResponseWrapper;
 
 import java.io.IOException;
 import java.net.http.HttpRequest;
@@ -32,11 +33,17 @@ public class RequestLoggingFilter extends OncePerRequestFilter {
 
          response.setHeader("X-Correlation-ID",correlationId);
 
+         ContentCachingResponseWrapper wrappedResponse =
+                 new ContentCachingResponseWrapper(response);
          try{
-             filterChain.doFilter(request,response);
+             filterChain.doFilter(request,wrappedResponse);
          }finally {
+             byte[] content = wrappedResponse.getContentAsByteArray();
+             String responseBody = new String(content, response.getCharacterEncoding());
              long duration = System.currentTimeMillis() - startTime;
-             log.info("Method:{} URI={} STATUS={} TIME={}ms BODY={}",request.getMethod(),request.getRequestURI(),response.getStatus(),duration);
+             log.info("Method:{} URI={} STATUS={} TIME={}ms BODY={}",request.getMethod(),request.getRequestURI(),response.getStatus(),duration,responseBody);
+
+             wrappedResponse.copyBodyToResponse();
 
              MDC.clear();
          }
