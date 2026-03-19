@@ -9,6 +9,10 @@ import com.practice.authService.exception.NotFoundException;
 import com.practice.authService.mapper.UserMapper;
 import com.practice.authService.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.neo4j.Neo4jProperties;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -17,8 +21,9 @@ import org.springframework.stereotype.Service;
 public class RegisterLoginService {
 
     private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
+    private final AuthenticationManager authManager;
+    private final JwtService jwtService;
 
     public void register(UserDto userDto) {
 
@@ -31,15 +36,9 @@ public class RegisterLoginService {
         return;
     }
 
-    public void login(String username, String password) {
+    public String login(String username, String password) {
+        Authentication authentication = authManager.authenticate(new UsernamePasswordAuthenticationToken(username,password));
 
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new NotFoundException("User not found please register first."));
-
-        if (!passwordEncoder.matches(password,user.getPassword())) {
-            throw new InvalidCredentialsException("Wrong password entered.");
-        }
-
-        return;
+        return jwtService.generateToken(username);
     }
 }

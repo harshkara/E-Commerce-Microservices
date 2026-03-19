@@ -26,7 +26,7 @@ public class RegisterLoginController {
 
     @PostMapping("/login")
     public ResponseEntity<ResponseDto> login(@RequestBody UserDto userDto) {
-        registerLoginService.login(userDto.getUserName(), userDto.getPassword());
-        return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto("User logged in successful."));
+        String resp = registerLoginService.login(userDto.getUserName(), userDto.getPassword());
+        return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto(resp));
     }
 }
