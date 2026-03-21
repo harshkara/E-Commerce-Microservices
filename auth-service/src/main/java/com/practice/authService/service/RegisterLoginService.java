@@ -1,5 +1,6 @@
 package com.practice.authService.service;
 
+import com.practice.authService.config.UserPrincipal;
 import com.practice.authService.dto.UserDto;
 import com.practice.authService.entity.User;
 import com.practice.authService.enm.Role;
@@ -38,7 +39,7 @@ public class RegisterLoginService {
 
     public String login(String username, String password) {
         Authentication authentication = authManager.authenticate(new UsernamePasswordAuthenticationToken(username,password));
-
-        return jwtService.generateToken(username);
+        UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
+        return jwtService.generateToken(userPrincipal.getUsername(),userPrincipal.getBranchcode());
     }
 }

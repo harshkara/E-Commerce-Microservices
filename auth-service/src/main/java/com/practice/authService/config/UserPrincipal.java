@@ -11,29 +11,36 @@ import java.util.List;
 @Getter
 public class UserPrincipal implements UserDetails {
 
-    private User user;
+    private String username;
+    private String password;
+    private String branchcode;
+    private Collection<? extends GrantedAuthority> authorities;
 
-    public UserPrincipal(User user){
-        this.user = user;
+    public UserPrincipal(String username,
+                         String password,
+                         String branchcode,
+                         Collection<? extends GrantedAuthority> authorities) {
+
+        this.username = username;
+        this.password = password;
+        this.branchcode = branchcode;
+        this.authorities = authorities;
     }
 
-    public User getUser(){
-       return user;
-    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of();
+        return  authorities;
     }
 
     @Override
     public String getPassword() {
-        return user.getPassword();
+        return password;
     }
 
     @Override
     public String getUsername() {
-        return user.getUsername();
+        return username;
     }
 
     @Override

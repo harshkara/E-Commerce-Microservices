@@ -26,6 +26,9 @@ public class User {
     private String password;
 
     @Column(nullable = false)
+    private String branchcode;
+
+    @Column(nullable = false)
     private String email;
 
     @Column(length=10)

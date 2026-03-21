@@ -24,13 +24,18 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         String password = authentication.getCredentials().toString();
 
         UserPrincipal userPrincipal = userDetailsService.loadUserByUsername(userName);
-        User user = userPrincipal.getUser();
 
         //before checking password we can check whether user is active or not multiple checks can be there
 
 
-        if(passwordEncoder.matches(password,user.getPassword())){
-            return new UsernamePasswordAuthenticationToken(userName,password,userPrincipal.getAuthorities());
+        if(passwordEncoder.matches(password,userPrincipal.getPassword())){
+            UserPrincipal safePrincipal = new UserPrincipal(
+                    userPrincipal.getUsername(),
+                    null, // remove password
+                    userPrincipal.getBranchcode(),
+                    userPrincipal.getAuthorities()
+            );
+            return new UsernamePasswordAuthenticationToken(safePrincipal,null,safePrincipal.getAuthorities());
         }else{
             throw new BadCredentialsException("Invalid Password");
         }

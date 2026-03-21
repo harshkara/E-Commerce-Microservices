@@ -1,0 +1,1 @@
+Alter Table Users Add COLUMN branchCode varchar(10);
