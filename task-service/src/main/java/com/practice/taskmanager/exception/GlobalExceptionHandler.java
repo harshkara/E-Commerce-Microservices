@@ -40,6 +40,14 @@ public class GlobalExceptionHandler {
                 .body(new ErrorResponseDto(false,ex.getMessage(),null, LocalDateTime.now()));
     }
 
+    @ExceptionHandler(BusinessException.class)
+    public ResponseEntity<ErrorResponseDto> handleBusinessException(BusinessException ex){
+        log.info("Business exception",ex);
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(new ErrorResponseDto(false,ex.getMessage(),null, LocalDateTime.now()));
+    }
+
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<ErrorResponseDto> handleNotFoundException(NotFoundException ex){
         log.info("Not found exception",ex);
@@ -52,6 +60,14 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(InvalidCredentialsException.class)
     public ResponseEntity<ErrorResponseDto> handleInvalidCredentialsException(InvalidCredentialsException ex){
         log.info("Invalid credentials exception",ex);
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .body(new ErrorResponseDto(false,ex.getMessage(),null,LocalDateTime.now()));
+    }
+
+    @ExceptionHandler(JwtAuthenticationException.class)
+    public ResponseEntity<ErrorResponseDto> handleJwtAuthenticationException(JwtAuthenticationException ex){
+        log.info("Unauthorised exception",ex);
         return ResponseEntity
                 .status(HttpStatus.UNAUTHORIZED)
                 .body(new ErrorResponseDto(false,ex.getMessage(),null,LocalDateTime.now()));

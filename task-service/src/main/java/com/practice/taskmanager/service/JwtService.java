@@ -19,35 +19,24 @@ import java.util.function.Function;
 
 @Service
 public class JwtService {
-    private  String secretKey = "";
+    private static final String SECRET_KEY =
+            "VGhpc0lzQVNlY3JldEtleUZvckpXVEhTMjU2QWxnb3JpdGhtMTIzNDU2";
 
-    public JwtService(){
-        try {
-            KeyGenerator keyGen = KeyGenerator.getInstance("HmacSHA256");
-            SecretKey sk = keyGen.generateKey();
-            secretKey = Base64.encodeBase64String(sk.getEncoded());
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public String generateToken(String userName){
+    public String generateToken(String userName,String branchcode){
 
         Map<String,Object> claims = new HashMap<>();
-
+        claims.put("branchcode",branchcode);
         return Jwts.builder()
-                .claims()
-                .add(claims)
+                .claims(claims)
                 .subject(userName)
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + 1000*60*3))
-                .and()
                 .signWith(getKey())
                 .compact();
     }
 
-    private SecretKey getKey(){
-        byte[] keyBytes = Decoders.BASE64.decode(secretKey);
+    private SecretKey getKey() {
+        byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
@@ -74,5 +63,9 @@ public class JwtService {
 
     private Date extractExpiration(String token) {
         return extractClaim(token,Claims::getExpiration);
+    }
+
+    public String extractBranchCode(String token) {
+        return extractClaim(token,claims -> claims.get("branchcode", String.class));
     }
 }
