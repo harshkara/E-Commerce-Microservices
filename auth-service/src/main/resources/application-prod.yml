@@ -3,9 +3,9 @@ spring:
     url: ${DB_URL}
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
-#    url: jdbc:postgresql://ep-blue-butterfly-a1km9fyz-pooler.ap-southeast-1.aws.neon.tech:5432/neondb?sslmode=require
+#    url: jdbc:postgresql://ep-royal-voice-a1lp71h5-pooler.ap-southeast-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require
 #    username: neondb_owner
-#    password: npg_Ii6xtZhkmL4P
+#    password: npg_EJu2vqn3LZzW
     driver-class-name: org.postgresql.Driver
   flyway:
     baseline-on-migrate: true
