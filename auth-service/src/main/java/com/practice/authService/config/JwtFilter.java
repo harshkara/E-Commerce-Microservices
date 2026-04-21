@@ -1,7 +1,7 @@
-package com.practice.taskmanager.config;
+package com.practice.authService.config;
 
-import com.practice.taskmanager.exception.JwtAuthenticationException;
-import com.practice.taskmanager.service.JwtService;
+import com.practice.authService.exception.JwtAuthenticationException;
+import com.practice.authService.service.JwtService;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -57,7 +57,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
 
         UserPrincipal principal =
-                new UserPrincipal(username, branchCode, Collections.emptyList());
+                new UserPrincipal(username, null, branchCode, Collections.emptyList());
 
         UsernamePasswordAuthenticationToken auth =
                 new UsernamePasswordAuthenticationToken(
