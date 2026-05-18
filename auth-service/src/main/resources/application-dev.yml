@@ -1,8 +1,10 @@
 spring:
   datasource:
-    url: ${DB_URL}
-    username: ${DB_USERNAME}
-    password: ${DB_PASSWORD}
+    url: jdbc:postgresql://ep-blue-butterfly-a1km9fyz-pooler.ap-southeast-1.aws.neon.tech:5432/neondb?sslmode=require
+    username: neondb_owner
+    password: npg_Ii6xtZhkmL4P
+
+
     driver-class-name: org.postgresql.Driver
     hikari:
       minimum-idle: 5
@@ -26,5 +28,3 @@ spring:
 #      password: password
 server:
   port: 8080
-
-

@@ -1,9 +1,9 @@
 spring:
   application:
     name: auth-service-api
-  profiles:
-    active: dev
-
+  config:
+    activate:
+      on-profile: dev
 logging:
   level:
     root: INFO

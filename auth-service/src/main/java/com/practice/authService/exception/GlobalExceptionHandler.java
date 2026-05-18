@@ -67,6 +67,14 @@ public class GlobalExceptionHandler {
                 .body(new ErrorResponseDto(false,ex.getMessage(),null,LocalDateTime.now()));
     }
 
+    @ExceptionHandler(JwtAuthenticationException.class)
+    public ResponseEntity<ErrorResponseDto> handleJwtAuthenticationException(JwtAuthenticationException ex){
+        log.info("Unauthorised exception",ex);
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .body(new ErrorResponseDto(false,ex.getMessage(),null,LocalDateTime.now()));
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponseDto> handleGenericException(Exception ex){
         log.info("Unknown exception",ex);
