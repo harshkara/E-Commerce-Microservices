@@ -1,15 +1,14 @@
 spring:
   application:
     name: task-manager-api
-  config:
-    activate:
-      on-profile: dev
+  profiles:
+    active: dev
 #    active: ${SPRING_PROFILE:dev}
 
 logging:
   level:
     root: INFO
-    com.practice.taskmanager : INFO
+    com.ecommerce.taskmanager : INFO
     org.springframework.web : INFO
     org.hibernate.sql : WARN
     org.hibernate.orm.jdbc.bind : WARN
