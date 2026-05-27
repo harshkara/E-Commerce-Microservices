@@ -1,6 +1,8 @@
 package com.common.security;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -54,7 +56,13 @@ public class JwtService {
     }
 
     public boolean validateToken(String token) {
-        return (!isTokenExpired(token));
+        try {
+            return !isTokenExpired(token);
+        } catch (ExpiredJwtException e) {
+            return false;
+        } catch (JwtException e) {
+            return false;
+        }
     }
 
     private boolean isTokenExpired(String token) {
@@ -62,7 +70,7 @@ public class JwtService {
     }
 
     public Date extractExpiration(String token) {
-        return extractClaim(token,Claims::getExpiration);
+        return extractClaim(token, Claims::getExpiration);
     }
 
     public String extractBranchCode(String token) {

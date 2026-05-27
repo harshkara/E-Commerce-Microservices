@@ -4,7 +4,7 @@ import com.common.security.JwtService;
 import com.common.constants.PublicRoutes;
 import com.common.security.UserPrincipal;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ReactiveRedisTemplate;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -25,10 +25,9 @@ public class JwtFilter implements WebFilter {
 
     private final JwtService jwtService;
 
-    private final RedisTemplate<String, String> redisTemplate;
+    private final ReactiveRedisTemplate<String, String> redisTemplate;
 
-    public JwtFilter(JwtService jwtService, RedisTemplate<String, String> redisTemplate) {
-
+    public JwtFilter(JwtService jwtService, ReactiveRedisTemplate<String, String> redisTemplate) {
         this.jwtService = jwtService;
         this.redisTemplate = redisTemplate;
     }
@@ -47,14 +46,12 @@ public class JwtFilter implements WebFilter {
 
         String authHeader = exchange.getRequest().getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
 
-        // No token -> continue
         if (authHeader == null || !authHeader.startsWith(BEARER_PREFIX)) {
             return unauthorized(exchange);
         }
 
         String token = authHeader.substring(BEARER_PREFIX.length());
 
-        // Invalid token
         if (!jwtService.validateToken(token)) {
             return unauthorized(exchange);
         }
@@ -64,48 +61,40 @@ public class JwtFilter implements WebFilter {
         String jti = jwtService.extractJti(token);
         long expirationTime = jwtService.extractExpiration(token).getTime();
 
-        // Invalid username
         if (username == null || username.isBlank()) {
             return unauthorized(exchange);
         }
 
-        // Blacklisted token
-        if (isBlackListed(jti)) {
-            return unauthorized(exchange);
-        }
+        return isBlackListed(jti).flatMap(isBlacklisted -> {
+            if (isBlacklisted) {
+                log.info("Token is blacklisted session is already expired.");
+                return unauthorized(exchange);
+            }
 
-        UserPrincipal principal = new UserPrincipal(username, null, branchCode, jti, expirationTime, Collections.emptyList());
+            UserPrincipal principal = new UserPrincipal(
+                    username, null, branchCode, jti, expirationTime, Collections.emptyList()
+            );
 
-        UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(principal, null, principal.getAuthorities());
+            UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
+                    principal, null, principal.getAuthorities()
+            );
 
-        return chain.filter(exchange)
-
-                .contextWrite(ReactiveSecurityContextHolder.withAuthentication(auth));
+            return chain.filter(exchange)
+                    .contextWrite(ReactiveSecurityContextHolder.withAuthentication(auth));
+        });
     }
 
     private Mono<Void> unauthorized(ServerWebExchange exchange) {
-
         exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
-
         return exchange.getResponse().setComplete();
     }
 
-    private boolean isBlackListed(String jti) {
-
-        try {
-
-            Boolean isBlackListed =
-
-                    redisTemplate.hasKey("blacklist:" + jti);
-
-            return Boolean.TRUE.equals(isBlackListed);
-
-        } catch (Exception ex) {
-
-            log.error("Redis unavailable. Skipping blacklist check.", ex);
-
-            // FAIL OPEN
-            return false;
-        }
+    private Mono<Boolean> isBlackListed(String jti) {
+        return redisTemplate.hasKey("blacklist:" + jti)
+                .onErrorResume(ex -> {
+                    log.error("Redis unavailable. Skipping blacklist check.", ex);
+                    // FAIL OPEN
+                    return Mono.just(false);
+                });
     }
 }
