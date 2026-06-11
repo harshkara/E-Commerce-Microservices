@@ -1,4 +1,4 @@
-package com.taskmanager.exception;
+package com.common.exception;
 
 public class BusinessException extends RuntimeException{
 

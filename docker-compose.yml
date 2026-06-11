@@ -15,6 +15,7 @@ services:
       - "8081:8081"
     depends_on:
       - redis
+      - gateway-service
 
   task-service:
     build:
@@ -24,6 +25,7 @@ services:
       - "8082:8082"
     depends_on:
       - redis
+      - gateway-service
 
   gateway-service:
     build:
@@ -33,5 +35,3 @@ services:
       - "8080:8080"
     depends_on:
       - redis
-      - auth-service
-      - task-service

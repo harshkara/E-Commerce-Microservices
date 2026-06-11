@@ -1,11 +1,11 @@
 package com.taskmanager.service;
 
 
+import com.common.exception.BusinessException;
+import com.common.exception.NotFoundException;
 import com.taskmanager.dto.TaskDto;
 import com.taskmanager.enm.EnumTaskStatus;
 import com.taskmanager.entity.Task;
-import com.taskmanager.exception.BusinessException;
-import com.taskmanager.exception.NotFoundException;
 import com.taskmanager.mapper.TaskMapper;
 import com.taskmanager.repository.TaskRepository;
 import lombok.RequiredArgsConstructor;

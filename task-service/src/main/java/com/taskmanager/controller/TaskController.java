@@ -1,6 +1,6 @@
 package com.taskmanager.controller;
 
-import com.taskmanager.config.UserPrincipal;
+import com.common.security.UserPrincipal;
 import com.taskmanager.dto.ResponseDto;
 import com.taskmanager.dto.TaskDto;
 import com.taskmanager.entity.Task;

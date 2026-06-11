@@ -12,3 +12,5 @@ logging:
     org.springframework.web : INFO
     org.hibernate.sql : WARN
     org.hibernate.orm.jdbc.bind : WARN
+jwt:
+  secret: VGhpc0lzQVNlY3JldEtleUZvckpXVEhTMjU2QWxnb3JpdGhtMTIzNDU2

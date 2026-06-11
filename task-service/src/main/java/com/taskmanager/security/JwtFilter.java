@@ -1,6 +1,7 @@
-package com.taskmanager.config;
+package com.taskmanager.security;
 
-import com.taskmanager.service.JwtService;
+import com.common.security.JwtService;
+import com.common.security.UserPrincipal;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -68,7 +69,7 @@ public class JwtFilter extends OncePerRequestFilter {
         }
 
         UserPrincipal principal =
-                new UserPrincipal(username, branchCode,jti,expirationTime, Collections.emptyList());
+                new UserPrincipal(username,null, branchCode,jti,expirationTime, Collections.emptyList());
 
         UsernamePasswordAuthenticationToken auth =
                 new UsernamePasswordAuthenticationToken(
