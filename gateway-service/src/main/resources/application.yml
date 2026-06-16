@@ -20,10 +20,15 @@ spring:
           predicates:
             - Path=/api/auth/**
 
-        - id: task-service
-          uri: http://task-service:8082
+        - id: product-service
+          uri: http://product-service:8082
           predicates:
-            - Path=/api/task/**
+            - Path=/api/product/**
+
+        - id: order-service
+          uri: http://order-service:8083
+          predicates:
+            - Path=/api/order/**
 
 logging:
   level:

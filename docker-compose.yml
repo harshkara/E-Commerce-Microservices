@@ -17,12 +17,22 @@ services:
       - redis
       - gateway-service
 
-  task-service:
+  product-service:
     build:
-      context: ./task-service
-    container_name: task-service
+      context: ./product-service
+    container_name: product-service
     ports:
       - "8082:8082"
+    depends_on:
+      - redis
+      - gateway-service
+
+  order-service:
+    build:
+      context: ./order-service
+    container_name: order-service
+    ports:
+      - "8083:8083"
     depends_on:
       - redis
       - gateway-service

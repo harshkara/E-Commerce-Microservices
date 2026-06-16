@@ -52,7 +52,9 @@
 
         <module>auth-service</module>
 
-        <module>task-service</module>
+        <module>product-service</module>
+
+        <module>order-service</module>
 
     </modules>
 
