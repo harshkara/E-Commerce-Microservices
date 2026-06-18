@@ -1,7 +1,7 @@
-package com.orderService.config;
+package com.authService.config;
 
+import com.authService.security.JwtFilter;
 import com.common.constants.PublicRoutes;
-import com.orderService.security.JwtFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -42,8 +42,5 @@ public class SecurityConfig {
          return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 
-//     @Bean
-//    public CompromisedPasswordChecker compromisedPasswordChecker(){
-//        return new HaveIBeenPwnedRestApiPasswordChecker();
-//     }
+
 }

@@ -1,8 +1,8 @@
-package com.orderService.service;
+package com.productService.service;
 
 
-import com.orderService.entity.Product;
-import com.orderService.repository.ProductRepository;
+import com.productService.entity.Product;
+import com.productService.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

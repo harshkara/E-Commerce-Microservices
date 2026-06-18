@@ -1,7 +1,7 @@
-package com.orderService.mapper;
+package com.productService.mapper;
 
-import com.orderService.dto.ProductDto;
-import com.orderService.entity.Product;
+import com.productService.dto.ProductDto;
+import com.productService.entity.Product;
 
 public class ProductMapper {
 

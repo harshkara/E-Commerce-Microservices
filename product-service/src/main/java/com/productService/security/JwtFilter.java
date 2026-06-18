@@ -1,5 +1,6 @@
-package com.orderService.security;
+package com.productService.security;
 
+import com.common.constants.PublicRoutes;
 import com.common.security.JwtService;
 import com.common.security.UserPrincipal;
 import lombok.extern.slf4j.Slf4j;
@@ -28,17 +29,30 @@ public class JwtFilter extends OncePerRequestFilter {
         this.jwtService = jwtService;
         this.redisTemplate = redisTemplate;
     }
+
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain)
             throws ServletException, IOException {
+        log.info("Entered into Product service :::::");
+        String path = request.getRequestURI();
+
+        for (String route : PublicRoutes.ROUTES) {
+            if (path.startsWith(route)) {
+                log.info("Entered into public route api::");
+                filterChain.doFilter(request, response);
+                return;
+            }
+        }
+
 
         String authHeader = request.getHeader("Authorization");
 
         // No token → just continue (SecurityConfig handles access)
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            filterChain.doFilter(request, response);
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.getWriter().write("Invalid or expired token");
             return;
         }
 
@@ -68,8 +82,9 @@ public class JwtFilter extends OncePerRequestFilter {
             return;
         }
 
+
         UserPrincipal principal =
-                new UserPrincipal(username,null, branchCode,jti,expirationTime, Collections.emptyList());
+                new UserPrincipal(username, null, branchCode,jti,expirationTime, Collections.emptyList());
 
         UsernamePasswordAuthenticationToken auth =
                 new UsernamePasswordAuthenticationToken(
@@ -84,10 +99,25 @@ public class JwtFilter extends OncePerRequestFilter {
     }
 
     private boolean isBlackListed(String jti) {
-        Boolean isBlackListed = redisTemplate.hasKey("blacklist:"+jti);
-        if(Boolean.TRUE.equals(isBlackListed)){
-            return true;
+
+        try {
+            Boolean isBlackListed = redisTemplate.hasKey("blacklist:"+jti);
+            if(Boolean.TRUE.equals(isBlackListed)){
+                return true;
+            }
+            return false;
+
+
+        }catch (Exception ex) {
+
+            log.error(
+                    "Redis unavailable. Skipping blacklist check.",
+                    ex
+            );
+
+            // FAIL OPEN
+            return false;
         }
-        return false;
+
     }
 }

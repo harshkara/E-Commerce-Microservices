@@ -1,6 +1,6 @@
-package com.orderService.dto;
+package com.productService.dto;
 
-import com.orderService.enm.EnumTaskStatus;
+import com.productService.enm.EnumTaskStatus;
 import lombok.Data;
 
 import java.time.LocalDateTime;

@@ -19,7 +19,7 @@ public class OrderMapper {
         order.setQuantity(request.getQuantity());
 
         order.setAmount(amount);
-        order.setStatus(OrderStatus.PENDING_PAYMENT);
+        order.setStatus(OrderStatus.CONFIRMED);
 
         order.setCreatedAt(LocalDateTime.now());
         order.setUpdatedAt(LocalDateTime.now());

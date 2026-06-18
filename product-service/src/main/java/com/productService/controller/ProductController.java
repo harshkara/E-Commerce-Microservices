@@ -1,8 +1,8 @@
-package com.orderService.controller;
+package com.productService.controller;
 
 import com.common.dto.ResponseDto;
-import com.orderService.entity.Product;
-import com.orderService.service.ProductService;
+import com.productService.entity.Product;
+import com.productService.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

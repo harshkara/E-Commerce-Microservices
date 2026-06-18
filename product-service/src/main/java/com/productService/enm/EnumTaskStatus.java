@@ -1,4 +1,4 @@
-package com.orderService.enm;
+package com.productService.enm;
 
 public enum EnumTaskStatus {
 

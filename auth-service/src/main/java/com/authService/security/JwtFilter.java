@@ -1,6 +1,8 @@
 package com.authService.security;
 
+import com.common.constants.PublicRoutes;
 import com.common.security.JwtService;
+import com.common.security.UserPrincipal;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -34,11 +36,23 @@ public class JwtFilter extends OncePerRequestFilter {
                                     FilterChain filterChain)
             throws ServletException, IOException {
 
+        String path = request.getRequestURI();
+
+        for (String route : PublicRoutes.ROUTES) {
+            if (path.startsWith(route)) {
+                log.info("Entered into public route api::");
+                filterChain.doFilter(request, response);
+                return;
+            }
+        }
+
+
         String authHeader = request.getHeader("Authorization");
 
         // No token → just continue (SecurityConfig handles access)
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            filterChain.doFilter(request, response);
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.getWriter().write("Invalid or expired token");
             return;
         }
 
@@ -46,9 +60,9 @@ public class JwtFilter extends OncePerRequestFilter {
 
         // ❗ Let GlobalExceptionHandler handle all failures
         if (!jwtService.validateToken(token)) {
-             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-             response.getWriter().write("Invalid or expired token");
-             return;
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.getWriter().write("Invalid or expired token");
+            return;
         }
 
         String username = jwtService.extractUserName(token);
@@ -69,8 +83,8 @@ public class JwtFilter extends OncePerRequestFilter {
         }
 
 
-        com.common.security.UserPrincipal principal =
-                new com.common.security.UserPrincipal(username, null, branchCode,jti,expirationTime, Collections.emptyList());
+        UserPrincipal principal =
+                new UserPrincipal(username, null, branchCode,jti,expirationTime, Collections.emptyList());
 
         UsernamePasswordAuthenticationToken auth =
                 new UsernamePasswordAuthenticationToken(

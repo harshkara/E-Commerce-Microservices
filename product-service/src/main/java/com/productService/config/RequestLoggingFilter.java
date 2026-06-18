@@ -1,4 +1,4 @@
-package com.orderService.config;
+package com.productService.config;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

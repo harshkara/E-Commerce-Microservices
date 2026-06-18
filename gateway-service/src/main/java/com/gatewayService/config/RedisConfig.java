@@ -9,6 +9,7 @@ import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.ReactiveRedisTemplate;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.RedisSerializationContext;
+import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 import java.time.Duration;
 
@@ -19,11 +20,18 @@ public class RedisConfig {
     @Bean
     @Primary
     public ReactiveRedisTemplate<String, String> reactiveRedisTemplate(
-            ReactiveRedisConnectionFactory connectionFactory) {
-        return new ReactiveRedisTemplate<>(connectionFactory, RedisSerializationContext.string());
+            ReactiveRedisConnectionFactory factory) {
+
+        RedisSerializationContext<String, String> context =
+                RedisSerializationContext
+                        .<String, String>newSerializationContext(new StringRedisSerializer())
+                        .value(new StringRedisSerializer())
+                        .build();
+
+        return new ReactiveRedisTemplate<>(factory, context);
     }
 
-    @Bean
+    @Bean("gatewayLettuceCustomizer")
     public LettuceClientConfigurationBuilderCustomizer
     lettuceClientConfigurationBuilderCustomizer() {
         return builder -> builder.commandTimeout(Duration.ofSeconds(1));
