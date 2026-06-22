@@ -1,9 +1,13 @@
 package com.gatewayService.security;
 
 import com.common.constants.PublicRoutes;
+import com.common.dto.ErrorResponseDto;
 import com.common.security.JwtService;
 import com.common.security.UserPrincipal;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.data.redis.core.ReactiveRedisTemplate;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -15,6 +19,7 @@ import org.springframework.web.server.WebFilter;
 import org.springframework.web.server.WebFilterChain;
 import reactor.core.publisher.Mono;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
 
 @Slf4j
@@ -25,11 +30,13 @@ public class JwtFilter implements WebFilter {
 
     private final JwtService jwtService;
     private final ReactiveRedisTemplate<String, String> redisTemplate;
+    private final ObjectMapper objectMapper;
 
     public JwtFilter(JwtService jwtService,
-                     ReactiveRedisTemplate<String, String> redisTemplate) {
+                     ReactiveRedisTemplate<String, String> redisTemplate,ObjectMapper objectMapper) {
         this.jwtService = jwtService;
         this.redisTemplate = redisTemplate;
+        this.objectMapper = objectMapper;
     }
 
     @Override
@@ -52,7 +59,7 @@ public class JwtFilter implements WebFilter {
 
         if (authHeader == null || !authHeader.startsWith(BEARER_PREFIX)) {
             log.info("Authorization header missing.");
-            return unauthorized(exchange);
+            return unauthorized(exchange,"Auth token is missing. Please contact administrator");
         }
 
         log.info("Authorization header received.");
@@ -61,7 +68,7 @@ public class JwtFilter implements WebFilter {
 
         if (!jwtService.validateToken(token)) {
             log.info("Token validation failed.");
-            return unauthorized(exchange);
+            return unauthorized(exchange,"Session expired. Please login again.");
         }
 
         log.info("Token validation successful.");
@@ -78,7 +85,7 @@ public class JwtFilter implements WebFilter {
 
         if (username == null || username.isBlank()) {
             log.info("Username not found inside token.");
-            return unauthorized(exchange);
+            return unauthorized(exchange,"Invalid or tampered token");
         }
 
         return isBlackListed(jti)
@@ -88,7 +95,7 @@ public class JwtFilter implements WebFilter {
 
                     if (isBlacklisted) {
                         log.info("Token is blacklisted.");
-                        return unauthorized(exchange);
+                        return unauthorized(exchange,"Your session is logged off.Please login again");
                     }
 
                     log.info("Token is NOT blacklisted.");
@@ -119,9 +126,25 @@ public class JwtFilter implements WebFilter {
                 });
     }
 
-    private Mono<Void> unauthorized(ServerWebExchange exchange) {
+    private Mono<Void> unauthorized(ServerWebExchange exchange,String message) {
+
         exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
-        return exchange.getResponse().setComplete();
+        exchange.getResponse().getHeaders().add("Content-Type", "application/json");
+
+        ErrorResponseDto error = new ErrorResponseDto(false,message,null, LocalDateTime.now());
+
+        try {
+            byte[] bytes = objectMapper.writeValueAsBytes(error);
+
+            DataBuffer buffer = exchange.getResponse()
+                    .bufferFactory()
+                    .wrap(bytes);
+
+            return exchange.getResponse().writeWith(Mono.just(buffer));
+
+        } catch ( JsonProcessingException e) {
+            return Mono.error(e);
+        }
     }
 
     private Mono<Boolean> isBlackListed(String jti) {

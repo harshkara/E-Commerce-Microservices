@@ -1,10 +1,13 @@
 package com.authService.security;
 
 import com.common.constants.PublicRoutes;
+import com.common.dto.ErrorResponseDto;
 import com.common.security.JwtService;
 import com.common.security.UserPrincipal;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -16,6 +19,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
 import java.util.Collections;
 
 @Slf4j
@@ -24,10 +29,13 @@ public class JwtFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
     private final RedisTemplate<String,String> redisTemplate;
+    private final ObjectMapper objectMapper;
 
-    public JwtFilter(JwtService jwtService,RedisTemplate<String,String> redisTemplate) {
+
+    public JwtFilter(JwtService jwtService,RedisTemplate<String,String> redisTemplate,ObjectMapper objectMapper) {
         this.jwtService = jwtService;
         this.redisTemplate = redisTemplate;
+        this.objectMapper = objectMapper;
     }
 
     @Override
@@ -51,8 +59,9 @@ public class JwtFilter extends OncePerRequestFilter {
 
         // No token → just continue (SecurityConfig handles access)
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.getWriter().write("Invalid or expired token");
+//            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+//            response.getWriter().write("Invalid or expired token");
+            writeUnauthorizedResponse(response,"Auth or token is not present. Please contact administrator");
             return;
         }
 
@@ -60,8 +69,9 @@ public class JwtFilter extends OncePerRequestFilter {
 
         // ❗ Let GlobalExceptionHandler handle all failures
         if (!jwtService.validateToken(token)) {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.getWriter().write("Invalid or expired token");
+//            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+//            response.getWriter().write("Invalid or expired token");
+            writeUnauthorizedResponse(response,"Invalid or expired token");
             return;
         }
 
@@ -71,14 +81,16 @@ public class JwtFilter extends OncePerRequestFilter {
         long expirationTime = jwtService.extractExpiration(token).getTime();
 
         if (username == null || username.isEmpty()) {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.getWriter().write("Invalid or userId not present.");
+//            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+//            response.getWriter().write("Invalid or userId not present.");
+            writeUnauthorizedResponse(response,"Invalid or userId not present.");
             return;
         }
 
         if(isBlackListed(jti)){
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.getWriter().write("Your session is already logged off. Please do fresh login.");
+//            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+//            response.getWriter().write("Your session is already logged off. Please do fresh login.");
+            writeUnauthorizedResponse(response,"Your session is already logged off. Please do fresh login.");
             return;
         }
 
@@ -97,6 +109,21 @@ public class JwtFilter extends OncePerRequestFilter {
 
         filterChain.doFilter(request, response);
     }
+
+    private void writeUnauthorizedResponse(HttpServletResponse response, String message) throws IOException {
+
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        response.setCharacterEncoding(StandardCharsets.UTF_8.name());
+
+        ErrorResponseDto errorResponse = new ErrorResponseDto(
+                false,
+                message,null, LocalDateTime.now()
+        );
+
+        objectMapper.writeValue(response.getWriter(), errorResponse);
+    }
+
 
     private boolean isBlackListed(String jti) {
 

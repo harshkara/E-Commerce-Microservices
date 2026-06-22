@@ -4,7 +4,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication(scanBasePackages = {
-		"com.productmanager",
+		"com.productService",
 		"com.common"
 })
 public class ProductManagerApplication {

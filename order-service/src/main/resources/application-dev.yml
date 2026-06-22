@@ -1,8 +1,5 @@
 spring:
   datasource:
-#    url: ${DB_URL}
-#    username: ${DB_USERNAME}
-#    password: ${DB_PASSWORD}
     url: jdbc:postgresql://ep-lively-rice-a1sm4lwm-pooler.ap-southeast-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require
     username: neondb_owner
     password: npg_EJu2vqn3LZzW
@@ -33,11 +30,6 @@ spring:
         order_inserts: true
         generate_statistics: true
         jdbc.batch_versioned_data: true
-
-#  security :
-#    user:
-#      name: user
-#      password: password
 server:
   port: 8083
 
