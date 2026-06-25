@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: order-manager-api
+  profiles:
+    active: dev
+#    active: ${SPRING_PROFILE:dev}
+
+logging:
+  level:
+    root: INFO
+    com.ecommerce.taskmanager : INFO
+    org.springframework.web : INFO
+    org.hibernate.sql : WARN
+    org.hibernate.orm.jdbc.bind : WARN
+jwt:
+  secret: VGhpc0lzQVNlY3JldEtleUZvckpXVEhTMjU2QWxnb3JpdGhtMTIzNDU2

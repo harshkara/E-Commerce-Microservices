@@ -1,0 +1,16 @@
+server:
+  port: 8081
+spring:
+  application:
+    name: auth-service
+  profiles:
+    active: dev
+logging:
+  level:
+    root: INFO
+    com.ecommerce.authService : INFO
+    org.springframework.web : INFO
+    org.hibernate.sql : WARN
+    org.hibernate.orm.jdbc.bind : WARN
+jwt:
+  secret: VGhpc0lzQVNlY3JldEtleUZvckpXVEhTMjU2QWxnb3JpdGhtMTIzNDU2
