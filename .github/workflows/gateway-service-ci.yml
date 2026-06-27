@@ -1,9 +1,12 @@
-name: JAVA CI
+name: Gateway Service CI
 
 on:
   pull_request:
     branches:
       - main
+    paths:
+      - 'gateway-service/**'
+      - 'common-lib/**'
 
 jobs:
   build:
@@ -16,12 +19,12 @@ jobs:
       - name: Setup Java 17
         uses: actions/setup-java@v4
         with:
-           distribution: temurin
-           java-version: '17'
-           cache: maven
+          distribution: temurin
+          java-version: '17'
+          cache: maven
 
       - name: Verify Maven Version
         run: mvn -version
 
       - name: Build Project
-        run: mvn clean package
+        run: mvn clean package -pl gateway-service -am
