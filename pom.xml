@@ -24,13 +24,13 @@
     <!-- Project Info -->
     <groupId>com.ecommerce</groupId>
 
-    <artifactId>workflow-management</artifactId>
+    <artifactId>ecommerce</artifactId>
 
     <version>0.0.1-SNAPSHOT</version>
 
     <packaging>pom</packaging>
 
-    <name>workflow-management</name>
+    <name>ecommerce</name>
 
     <!-- Common Properties -->
     <properties>
