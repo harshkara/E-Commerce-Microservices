@@ -23,6 +23,7 @@ public class ProductController {
     public ResponseEntity<ResponseDto> get() {
         List<Product> products = productService.getAllProducts();
         log.info("Product list fetched successfully.");
+        log.info("Product list fetched successfully.");
         return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto(products));
     }
 
