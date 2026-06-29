@@ -22,7 +22,7 @@ public class RegisterLoginController {
 
     @PostMapping("/register")
     public ResponseEntity<ResponseDto> register(@Valid @RequestBody UserDto userDto) {
-        log.info("Into the register controller");
+        log.info("Into the register controller with the user details");
         registerLoginService.register(userDto);
         return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto("User registered successfully."));
     }
